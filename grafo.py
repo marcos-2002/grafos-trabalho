@@ -41,3 +41,26 @@ class Grafo:
                 cont += 1
             self.l_adjacencia[elemento] = lis.copy()
             lis.clear()
+    
+    def bfs(self, inicio):
+        inicio = inicio - 1
+        pilha = list()
+        visitados = list()
+        pilha.append(inicio)
+        visitados.append(inicio)
+        familia = defaultdict(list)
+        while len(pilha) > 0:
+            pai = self.m_adjacencia[pilha[0]]
+            nome_pai = pilha[0]
+            del pilha[0]
+            for x in range(len(pai)):
+                if (pai[x] == 1) and (x not in visitados):
+                    visitados.append(x)         # acabou de visitar um novo nó
+                    pilha.append(x)             # coloca o nó na pilha pra visitar os filhos dele
+                    familia[nome_pai + 1].append(x + 1) # adiciona o nó pai e seus filhos
+        return familia
+
+    def dfs(self, inicio):
+        inicio = inicio - 1
+        
+            
