@@ -11,10 +11,5 @@ print("\n")
 for x in grafo.m_adjacencia:
     print(grafo.m_adjacencia[x])
 
-# print("\n-=-=-=-=-=-=-=-= bfs -=-=-=-=-=-==-=")
-# inicio = int(input("Qual o vértice inicial: "))
-# print(grafo.bfs(inicio))
-
-print("\n-=-=-=-=-=-=-=-= dfs -=-=-=-=-=-==-=")
-inicio = int(input("Qual o vértice inicial: "))
-print(grafo.dfs(inicio))
+print("\n-=-=-=-=-=-=-=-= componentes -=-=-=-=-=-==-=")
+grafo.nivel_vertices()

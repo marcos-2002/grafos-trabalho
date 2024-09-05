@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 
 class Grafo:
     def __init__(self, tamanho, arestas):
@@ -74,4 +74,29 @@ class Grafo:
             print('Visitados: ', visitados)
         return visitados
     
-    
+    def componentes(self):
+        num_componente = 0
+        componentes = defaultdict(list)
+        proximo = ''
+        visitados_globais = {i: 'branco' for i in range(len(self.m_adjacencia))}
+        while 'branco' in visitados_globais.values():
+            inicio = int(input(f'\nDigite o {proximo} vértice inicial do grafo: '))
+            visitados = self.dfs(inicio)
+            for x in visitados:
+                if visitados[x] == 'verde':
+                    visitados_globais[x] = 'verde'
+                    componentes[num_componente].append(x+1)
+            num_componente += 1
+        print('=-=-=-=- Componentes em ordem decrescente de tamanho -=-=-=-=')
+        while componentes:
+            maior_componente = componentes[0]
+            indice = 0
+            for x in range(1, len(componentes)):
+                if len(componentes[x]) > len(maior_componente):
+                    maior_componente = componentes[x]
+                    indice = x
+            componentes.pop(indice)
+            print(f'Componente: {maior_componente}')
+            print(f'Tamanho: {len(maior_componente)}\n')
+        
+
