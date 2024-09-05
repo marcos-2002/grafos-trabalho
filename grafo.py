@@ -62,5 +62,16 @@ class Grafo:
 
     def dfs(self, inicio):
         inicio = inicio - 1
-        
-            
+        pilha = [inicio]
+        visitados = {i: 'branco' for i in range(len(self.m_adjacencia))} # começa com todos brancos
+
+        while pilha:
+            vertice_atual = pilha.pop()
+            for x in reversed(range(len(self.m_adjacencia[vertice_atual]))):
+                if self.m_adjacencia[vertice_atual][x] == 1 and visitados[x] == 'branco':
+                    pilha.append(x)             # adiciona o vertive ainda não visitado na lista
+            visitados[vertice_atual] = 'verde'  # como o vertice foi completamente visitado ele é marcado como verde
+            print('Visitados: ', visitados)
+        return visitados
+    
+    
