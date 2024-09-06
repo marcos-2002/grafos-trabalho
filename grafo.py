@@ -110,4 +110,3 @@ class Grafo:
             componentes.pop(indice)
             print(f'Componente: {maior_componente}')
             print(f'Tamanho: {len(maior_componente)}\n')
-        
