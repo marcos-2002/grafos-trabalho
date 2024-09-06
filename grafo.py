@@ -1,4 +1,4 @@
-from collections import defaultdict, deque
+from collections import defaultdict
 
 class Grafo:
     def __init__(self, tamanho, arestas):
@@ -44,21 +44,22 @@ class Grafo:
     
     def bfs(self, inicio):
         inicio = inicio - 1
-        pilha = list()
+        fila = list()
         visitados = list()
-        pilha.append(inicio)
+        fila.append(inicio)
         visitados.append(inicio)
         familia = defaultdict(list)
-        while len(pilha) > 0:
-            pai = self.m_adjacencia[pilha[0]]
-            nome_pai = pilha[0]
-            del pilha[0]
+        niveis = {inicio: 0}  # Dicionário para armazenar os níveis de cada nó
+        while len(fila) > 0:
+            nome_pai = fila.pop(0)  # Retira o primeiro elemento da fila (FIFO)
+            pai = self.m_adjacencia[nome_pai]
             for x in range(len(pai)):
-                if (pai[x] == 1) and (x not in visitados):
-                    visitados.append(x)         # acabou de visitar um novo nó
-                    pilha.append(x)             # coloca o nó na pilha pra visitar os filhos dele
-                    familia[nome_pai + 1].append(x + 1) # adiciona o nó pai e seus filhos
-        return familia
+                if pai[x] == 1 and x not in visitados:
+                    visitados.append(x)         # Acabou de visitar um novo nó
+                    fila.append(x)              # Coloca o nó na fila para visitar os filhos dele
+                    familia[nome_pai + 1].append(x + 1)  # Adiciona o nó pai e seus filhos
+                    niveis[x] = niveis[nome_pai] + 1     # Define o nível do filho
+        return familia, niveis
 
     def dfs(self, inicio):
         inicio = inicio - 1
@@ -99,4 +100,3 @@ class Grafo:
             print(f'Componente: {maior_componente}')
             print(f'Tamanho: {len(maior_componente)}\n')
         
-
