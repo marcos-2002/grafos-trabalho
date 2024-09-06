@@ -39,7 +39,26 @@ while True:
             print(f'{x} - {familia[x]}')
         print('Nível: ', nivel_formatado)
     elif escolha == 5:
-        caminho = grafo.caminho_minimo()
+        vertice_inicial = int(input('Digite o vértice inicial: '))
+        vertice_final = int(input('Digite o vértice final: '))
+        # Para grafos com pesos
+        if any(len(aresta) == 3 for aresta in grafo.getAresta()):
+            distances, predecessores = grafo.dijkstra(vertice_inicial - 1)
+            path = grafo.reconstruir_caminho(predecessores, vertice_inicial - 1, vertice_final - 1)
+            print(f'Distância do vértice {vertice_inicial} ao vértice {vertice_final}: {distances[vertice_final - 1]}')
+            print(f'Caminho mínimo do vértice {vertice_inicial} ao vértice {vertice_final}: {path}')
+        else:
+            # Para grafos sem pesos
+            familia, niveis, predecessores = grafo.bfs(vertice_inicial)
+            print(f'Distância do vértice {vertice_inicial} ao vértice {vertice_final}: {niveis.get(vertice_final - 1, "Inacessível")}')
+            path = grafo.reconstruir_caminho(predecessores, vertice_inicial - 1, vertice_final - 1)
+            print(f'Caminho mínimo do vértice {vertice_inicial} ao vértice {vertice_final}: {path}')
+
 
 print('\n-=-=-=-=-=-=-=-= FIM =-=-=-=-=-=-=-=-=\n')
 
+
+# familia, niveis, predecessores = grafo.bfs(4)
+# print('familia: ', familia)
+# print(f'niveis: {niveis}')
+# print(f'predecessores: {predecessores}')

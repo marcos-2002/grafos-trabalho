@@ -1,4 +1,5 @@
 from collections import defaultdict
+import heapq
 
 class Grafo:
     def __init__(self, tamanho, arestas):
@@ -24,7 +25,7 @@ class Grafo:
     def matriz_adjacencia(self):
         lis = []
         for x in range(self.tamanho):
-            lis.append(0)
+            lis.appfinal(0)
         for x in range(self.tamanho):
             self.m_adjacencia[x] = lis.copy()
         for aresta in self.arestas:
@@ -41,7 +42,7 @@ class Grafo:
             cont = 0
             for valor in self.m_adjacencia[elemento]:
                 if(valor != 0):
-                    lis.append(cont)
+                    lis.appfinal(cont)
                 cont += 1
             self.l_adjacencia[elemento] = lis.copy()
             lis.clear()
@@ -50,20 +51,22 @@ class Grafo:
         inicio = inicio - 1
         fila = list()
         visitados = list()
-        fila.append(inicio)
-        visitados.append(inicio)
+        fila.appfinal(inicio)
+        visitados.appfinal(inicio)
         familia = defaultdict(list)
         niveis = {inicio: 0}  # Dicionário para armazenar os níveis de cada nó
+        predecessores = {vertice: None for vertice in self.m_adjacencia} 
         while len(fila) > 0:
             nome_pai = fila.pop(0)  # Retira o primeiro elemento da fila (FIFO)
             pai = self.m_adjacencia[nome_pai]
             for x in range(len(pai)):
                 if pai[x] != 0 and x not in visitados:
-                    visitados.append(x)         # Acabou de visitar um novo nó
-                    fila.append(x)              # Coloca o nó na fila para visitar os filhos dele
-                    familia[nome_pai + 1].append(x + 1)  # Adiciona o nó pai e seus filhos
+                    visitados.appfinal(x)         # Acabou de visitar um novo nó
+                    fila.appfinal(x)              # Coloca o nó na fila para visitar os filhos dele
+                    familia[nome_pai + 1].appfinal(x + 1)  # Adiciona o nó pai e seus filhos
                     niveis[x] = niveis[nome_pai] + 1     # Define o nível do filho
-        return familia, niveis
+                    predecessores[x] = nome_pai
+        return familia, niveis, predecessores
 
     def dfs(self, inicio):
         inicio = inicio - 1
@@ -74,7 +77,7 @@ class Grafo:
             vertice_atual = pilha.pop()
             for x in reversed(range(len(self.m_adjacencia[vertice_atual]))):
                 if self.m_adjacencia[vertice_atual][x] != 0 and visitados[x] == 'branco':
-                    pilha.append(x)             # adiciona o vertive ainda não visitado na lista
+                    pilha.appfinal(x)             # adiciona o vertive ainda não visitado na lista
             visitados[vertice_atual] = 'verde'  # como o vertice foi completamente visitado ele é marcado como verde
             print('Visitados: ', visitados)
         return visitados
@@ -85,7 +88,7 @@ class Grafo:
         niveis_global = dict()
         for x in range(qtd_inicio):
             inicio = int(input(f'Digite o {x+1}° vértice inicial: '))
-            familia, niveis = self.bfs(inicio)
+            familia, niveis, predecessores = self.bfs(inicio)
             familia_global.update(familia)
             niveis_global.update(niveis)
         return familia_global, niveis_global
@@ -101,7 +104,7 @@ class Grafo:
             for x in visitados:
                 if visitados[x] == 'verde':
                     visitados_globais[x] = 'verde'
-                    componentes[num_componente].append(x+1)
+                    componentes[num_componente].appfinal(x+1)
             num_componente += 1
         print('=-=-=-=- Componentes em ordem decrescente de tamanho -=-=-=-=')
         while componentes:
@@ -115,10 +118,52 @@ class Grafo:
             print(f'Componente: {maior_componente}')
             print(f'Tamanho: {len(maior_componente)}\n')
 
-    def caminho_minimo(self, inicio):
+    def caminho_minimo(self):
         # arestas sem peso
         if len(self.arestas[0]) == 2:
-            pass
+            familia, niveis, _ = self.usar_bfs()
+            print('Família:', familia)
+            print('Níveis:', niveis)
         # arestas com peso
         else:
-            pass
+            for vertice in range(self.tamanho):
+                distancias, predecessores = self.dijkstra(vertice)
+                print(f"Distâncias a partir do vértice {vertice + 1}:", distancias)
+                print(f"Predecessores a partir do vértice {vertice + 1}:", predecessores)
+
+    def dijkstra(self, inicio):
+        # Inicializa a distância dos vértices com infinito e a distância do vértice inicial como 0
+        distancias = {vertice: float('inf') for vertice in range(self.tamanho)}
+        distancias[inicio] = 0
+        # Inicializa o heap de prioridade
+        prioridade_fila = [(0, inicio)]
+        # Inicializa o dicionário de predecessores
+        predecessores = {vertice: None for vertice in range(self.tamanho)}
+        
+        while prioridade_fila:
+            atual_distancia, atual_vertice = heapq.heappop(prioridade_fila)
+            
+            if atual_distancia > distancias[atual_vertice]:
+                continue
+            
+            for vizinho, peso in enumerate(self.m_adjacencia[atual_vertice]):
+                if peso != 0:
+                    distancia = atual_distancia + peso
+                    
+                    if distancia < distancias[vizinho]:
+                        distancias[vizinho] = distancia
+                        predecessores[vizinho] = atual_vertice
+                        heapq.heappush(prioridade_fila, (distancia, vizinho))
+        
+        return distancias, predecessores
+
+    def reconstruir_caminho(self, predecessores, inicio, final):
+        caminho = []
+        while final is not None:
+            caminho.append(final)
+            final = predecessores[final]
+        caminho.reverse()
+        if caminho[0] == inicio:
+            return caminho
+        else:
+            return []  # Não há caminho entre inicio e final
