@@ -11,11 +11,12 @@ while True:
     2 - Ver lista de adjacência
     3 - Ver componentes do grafo
     4 - Ver vértices pais e seus filhos e os níveis dos vértices
-    5 - Sair
+    5 - Ver o caminho mínimo entre dois vértices
+    7 - Sair
 ''')
     print('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
     escolha = int(input('Digite sua escolha: '))
-    if escolha == 5:
+    if escolha == 7:
         break
     elif escolha == 1:
         matriz_adjacencia = grafo.getM_adjacencia()
@@ -37,6 +38,8 @@ while True:
         for x in familia:
             print(f'{x} - {familia[x]}')
         print('Nível: ', nivel_formatado)
+    elif escolha == 5:
+        caminho = grafo.caminho_minimo()
 
 print('\n-=-=-=-=-=-=-=-= FIM =-=-=-=-=-=-=-=-=\n')
 

@@ -28,15 +28,19 @@ class Grafo:
         for x in range(self.tamanho):
             self.m_adjacencia[x] = lis.copy()
         for aresta in self.arestas:
-            self.m_adjacencia[aresta[0] - 1][aresta[1] - 1] = 1
-            self.m_adjacencia[aresta[1] - 1][aresta[0] - 1] = 1
+            if len(aresta) == 2:
+                self.m_adjacencia[aresta[0] - 1][aresta[1] - 1] = 1
+                self.m_adjacencia[aresta[1] - 1][aresta[0] - 1] = 1
+            else:
+                self.m_adjacencia[aresta[0] - 1][aresta[1] - 1] = aresta[2]
+                self.m_adjacencia[aresta[1] - 1][aresta[0] - 1] = aresta[2]
     
     def lista_adjacencia(self):
         lis = []
         for elemento in self.m_adjacencia:
             cont = 0
             for valor in self.m_adjacencia[elemento]:
-                if(valor == 1):
+                if(valor != 0):
                     lis.append(cont)
                 cont += 1
             self.l_adjacencia[elemento] = lis.copy()
@@ -54,7 +58,7 @@ class Grafo:
             nome_pai = fila.pop(0)  # Retira o primeiro elemento da fila (FIFO)
             pai = self.m_adjacencia[nome_pai]
             for x in range(len(pai)):
-                if pai[x] == 1 and x not in visitados:
+                if pai[x] != 0 and x not in visitados:
                     visitados.append(x)         # Acabou de visitar um novo nó
                     fila.append(x)              # Coloca o nó na fila para visitar os filhos dele
                     familia[nome_pai + 1].append(x + 1)  # Adiciona o nó pai e seus filhos
@@ -69,7 +73,7 @@ class Grafo:
         while pilha:
             vertice_atual = pilha.pop()
             for x in reversed(range(len(self.m_adjacencia[vertice_atual]))):
-                if self.m_adjacencia[vertice_atual][x] == 1 and visitados[x] == 'branco':
+                if self.m_adjacencia[vertice_atual][x] != 0 and visitados[x] == 'branco':
                     pilha.append(x)             # adiciona o vertive ainda não visitado na lista
             visitados[vertice_atual] = 'verde'  # como o vertice foi completamente visitado ele é marcado como verde
             print('Visitados: ', visitados)
@@ -110,3 +114,11 @@ class Grafo:
             componentes.pop(indice)
             print(f'Componente: {maior_componente}')
             print(f'Tamanho: {len(maior_componente)}\n')
+
+    def caminho_minimo(self, inicio):
+        # arestas sem peso
+        if len(self.arestas[0]) == 2:
+            pass
+        # arestas com peso
+        else:
+            pass

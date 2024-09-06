@@ -8,5 +8,5 @@ def ler_arquivo():
                 cont += 1
                 continue
             l = linha.strip().split()
-            arestas.append([int(val) for val in l])
+            arestas.append([int(val) if i < 2 else float(val) for i, val in enumerate(l)])
     return tamanho, arestas
