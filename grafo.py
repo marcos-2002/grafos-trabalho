@@ -75,6 +75,17 @@ class Grafo:
             print('Visitados: ', visitados)
         return visitados
     
+    def usar_bfs(self):
+        qtd_inicio = int(input('Digite quantos vértices de inicio tem seu grafo: ')) # grafos desconexos
+        familia_global = defaultdict(list)
+        niveis_global = dict()
+        for x in range(qtd_inicio):
+            inicio = int(input(f'Digite o {x+1}° vértice inicial: '))
+            familia, niveis = self.bfs(inicio)
+            familia_global.update(familia)
+            niveis_global.update(niveis)
+        return familia_global, niveis_global
+    
     def componentes(self):
         num_componente = 0
         componentes = defaultdict(list)
